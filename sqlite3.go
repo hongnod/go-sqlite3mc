@@ -494,10 +494,12 @@ func (ai *aggInfo) Done(ctx *C.sqlite3_context) {
 // Commit transaction.
 func (tx *SQLiteTx) Commit() error {
 	_, err := tx.c.exec(context.Background(), "COMMIT", nil)
-	if err != nil && err.(Error).Code == C.SQLITE_BUSY {
-		// sqlite3 will leave the transaction open in this scenario.
+	if err != nil {
+		// sqlite3 may leave the transaction open in this scenario.
 		// However, database/sql considers the transaction complete once we
 		// return from Commit() - we must clean up to honour its semantics.
+		// We don't know if the ROLLBACK is strictly necessary, but according
+		// to sqlite's docs, there is no harm in calling ROLLBACK unnecessarily.
 		tx.c.exec(context.Background(), "ROLLBACK", nil)
 	}
 	return err
@@ -1100,7 +1102,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 	vfsName := ""
 	var cacheSize *int64
 
-	// æ•°æ®å¯†é’¥
+	// Êı¾İÃÜÔ¿
 	dbKey := ""
 	pos := strings.IndexRune(dsn, '?')
 	if pos >= 1 {
@@ -1443,7 +1445,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 		if !strings.HasPrefix(dsn, "file:") {
 			dsn = dsn[:pos]
 		}
-		// æ•°æ®å¯†é’¥
+		// Êı¾İÃÜÔ¿
 		if val := params.Get("_db_key"); val != "" {
 			dbKey = val
 		}
@@ -1473,7 +1475,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 		return nil, errors.New("sqlite succeeded without returning a database")
 	}
 
-	if dbKey != "" { // é…ç½®äº†å¯†é’¥
+	if dbKey != "" { // ÅäÖÃÁËÃÜÔ¿
 		key := C.CString(dbKey)
 		defer C.free(unsafe.Pointer(key))
 		rv := C.sqlite3_key(db, unsafe.Pointer(key), -1)

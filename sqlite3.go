@@ -1102,7 +1102,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 	vfsName := ""
 	var cacheSize *int64
 
-	// Êı¾İÃÜÔ¿
+	// æ•°æ®å¯†é’¥
 	dbKey := ""
 	pos := strings.IndexRune(dsn, '?')
 	if pos >= 1 {
@@ -1445,7 +1445,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 		if !strings.HasPrefix(dsn, "file:") {
 			dsn = dsn[:pos]
 		}
-		// Êı¾İÃÜÔ¿
+		// æ•°æ®å¯†é’¥
 		if val := params.Get("_db_key"); val != "" {
 			dbKey = val
 		}
@@ -1475,7 +1475,7 @@ func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
 		return nil, errors.New("sqlite succeeded without returning a database")
 	}
 
-	if dbKey != "" { // ÅäÖÃÁËÃÜÔ¿
+	if dbKey != "" { // é…ç½®äº†å¯†é’¥
 		key := C.CString(dbKey)
 		defer C.free(unsafe.Pointer(key))
 		rv := C.sqlite3_key(db, unsafe.Pointer(key), -1)

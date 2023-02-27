@@ -14,7 +14,7 @@ package sqlite3
 #ifndef USE_LIBSQLITE3
 #include "sqlite3-binding.h"
 #else
-#include <sqlite3.h>
+#include <sqlite3mc_amalgamation.h>
 #endif
 #include <stdlib.h>
 
@@ -360,11 +360,11 @@ func callbackRetGeneric(ctx *C.sqlite3_context, v reflect.Value) error {
 	}
 
 	cb, err := callbackRet(v.Elem().Type())
-        if err != nil {
-                return err
-        }
+	if err != nil {
+		return err
+	}
 
-        return cb(ctx, v.Elem())
+	return cb(ctx, v.Elem())
 }
 
 func callbackRet(typ reflect.Type) (callbackRetConverter, error) {

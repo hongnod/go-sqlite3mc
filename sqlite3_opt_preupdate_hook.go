@@ -4,6 +4,7 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
+//go:build sqlite_preupdate_hook
 // +build sqlite_preupdate_hook
 
 package sqlite3
@@ -15,7 +16,7 @@ package sqlite3
 #ifndef USE_LIBSQLITE3
 #include "sqlite3-binding.h"
 #else
-#include <sqlite3.h>
+#include <sqlite3mc_amalgamation.h>
 #endif
 #include <stdlib.h>
 #include <string.h>

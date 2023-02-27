@@ -13,14 +13,11 @@
 ** shared libraries that want to be imported as extensions into
 ** an SQLite instance.  Shared libraries that intend to be loaded
 ** as extensions by SQLite should #include this file instead of 
-** sqlite3.h.
+** sqlite3mc_amalgamation.
 */
 #ifndef SQLITE3EXT_H
 #define SQLITE3EXT_H
-#include "sqlite3-binding.h"
-#ifdef __clang__
-#define assert(condition) ((void)0)
-#endif
+#include "sqlite3.h"
 
 /*
 ** The following structure holds pointers to all of the SQLite API
@@ -362,6 +359,8 @@ struct sqlite3_api_routines {
   const char *(*db_name)(sqlite3*,int);
   /* Version 3.40.0 and later */
   int (*value_encoding)(sqlite3_value*);
+  /* Version 3.41.0 and later */
+  int (*is_interrupted)(sqlite3*);
 };
 
 /*
@@ -688,6 +687,8 @@ typedef int (*sqlite3_loadext_entry)(
 #define sqlite3_db_name                sqlite3_api->db_name
 /* Version 3.40.0 and later */
 #define sqlite3_value_encoding         sqlite3_api->value_encoding
+/* Version 3.41.0 and later */
+#define sqlite3_is_interrupted         sqlite3_api->is_interrupted
 #endif /* !defined(SQLITE_CORE) && !defined(SQLITE_OMIT_LOAD_EXTENSION) */
 
 #if !defined(SQLITE_CORE) && !defined(SQLITE_OMIT_LOAD_EXTENSION)
@@ -706,7 +707,3 @@ typedef int (*sqlite3_loadext_entry)(
 #endif
 
 #endif /* SQLITE3EXT_H */
-#else // USE_LIBSQLITE3
- // If users really want to link against the system sqlite3 we
-// need to make this file a noop.
- #endif

@@ -137,7 +137,7 @@ func main() {
 		switch path.Base(zf.Name) {
 		case "sqlite3.c":
 			f, err = os.Create("../sqlite3-binding.c")
-		case "sqlite3.h":
+		case "sqlite3mc_amalgamation":
 			f, err = os.Create("../sqlite3-binding.h")
 		case "sqlite3ext.h":
 			f, err = os.Create("../sqlite3ext.h")
@@ -161,7 +161,7 @@ func main() {
 		scanner := bufio.NewScanner(zr)
 		for scanner.Scan() {
 			text := scanner.Text()
-			if text == `#include "sqlite3.h"` {
+			if text == `#include "sqlite3mc_amalgamation"` {
 				text = `#include "sqlite3-binding.h"
 #ifdef __clang__
 #define assert(condition) ((void)0)
